@@ -1,0 +1,5 @@
+@import "new-api-admin-ui/styles.css";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "new-api-admin-ui/theme.css";
+@source './';

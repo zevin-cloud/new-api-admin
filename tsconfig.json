@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@ui/*": [
+        "packages/admin-ui/src/*"
+      ],
+      "new-api-admin-ui": [
+        "packages/admin-ui/src/index.ts"
+      ],
+      "new-api-admin-ui/data-table": [
+        "packages/admin-ui/src/components/data-table/index.ts"
+      ],
+      "new-api-admin-ui/ui/*": [
+        "packages/admin-ui/src/components/ui/*"
+      ],
+      "new-api-admin-ui/form": [
+        "packages/admin-ui/src/components/ui/form.tsx"
+      ],
+      "new-api-admin-ui/layout": [
+        "packages/admin-ui/src/admin-layout.tsx"
+      ],
+      "new-api-admin-ui/theme": [
+        "packages/admin-ui/src/theme.ts"
+      ],
+      "new-api-admin-ui/utils": [
+        "packages/admin-ui/src/utils.ts"
+      ]
+    }
+  },
+  "include": [
+    "packages/*/src",
+    "apps/*/src",
+    "scripts/*.ts"
+  ],
+  "exclude": [
+    "**/dist",
+    "**/node_modules"
+  ]
+}

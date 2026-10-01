@@ -1,0 +1,20 @@
+{
+  "name": "new-api-admin-template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "rsbuild dev --host 127.0.0.1 --port 4175",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview --host 127.0.0.1 --port 4175"
+  },
+  "dependencies": {
+    "new-api-admin-ui": "workspace:*",
+    "@tanstack/react-query": "^5.101.2",
+    "@tanstack/react-router": "^1.170.17",
+    "@hookform/resolvers": "^5.4.0",
+    "zod": "^4.4.3",
+    "lucide-react": "^1.23.0",
+    "recharts": "3.9.1",
+    "sonner": "^2.0.7"
+  }
+}
