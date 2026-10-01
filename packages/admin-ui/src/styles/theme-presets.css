@@ -732,3 +732,22 @@ For commercial licensing, please contact support@quantumnous.com
     width: 100%;
   }
 }
+
+/* A user-selected accent keeps the current light/dark neutral surfaces. */
+[data-theme-preset="custom"] {
+  --primary: var(--custom-theme-color, #8b5cf6);
+  --primary-foreground: var(--custom-theme-foreground, #000000);
+  --ring: var(--primary);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-ring: var(--primary);
+  --accent: color-mix(in srgb, var(--primary) 12%, var(--background));
+  --accent-foreground: var(--foreground);
+  --sidebar-accent: color-mix(in srgb, var(--primary) 16%, var(--sidebar));
+  --sidebar-accent-foreground: var(--sidebar-foreground);
+  --chart-1: var(--primary);
+  --chart-2: color-mix(in srgb, var(--primary) 70%, #06b6d4);
+  --chart-3: color-mix(in srgb, var(--primary) 70%, #f59e0b);
+  --chart-4: color-mix(in srgb, var(--primary) 65%, #ec4899);
+  --chart-5: color-mix(in srgb, var(--primary) 55%, #10b981);
+}

@@ -70,6 +70,10 @@ main.tsx
 
 先评估现有 props/插槽；保持已有行为兼容，在 `/components` 或相关完整范例添加可访问的展示入口。维护导出、类型、覆盖清单和测试。运行 `pack:ui` 后，在独立宿主安装 tarball 验证，不使用本 workspace 的路径别名。
 
+### 修改配色与预设
+
+预设定义在 `lib/theme-customization.ts`；名称使用英文原文，翻译扫描器会识别这个有限注册表。不要恢复动态拼接的 `preset.*` key。自定义 HEX 色值由 `ThemeCustomizationProvider` 校验、持久化并注入 CSS 变量；`config-drawer` 只负责编辑与反馈，主题规则位于 `styles/theme-presets.css`。验证无效输入保留原色、预设切换、刷新恢复、重置，以及手机和明暗模式。
+
 ### 更新版本
 
 修改组件包版本并同步锁文件与 README 的 tarball 示例。执行构建、打包、独立安装检查。安装验证时使用新的 tarball 文件名，避免同名本地包被包管理器缓存。没有默认 npm 发布流程。

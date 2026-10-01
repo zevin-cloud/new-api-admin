@@ -89,7 +89,7 @@
 | FloatingWindow | 反馈与弹层：拖动、缩放、折叠、持久化 |
 | RichContent、HtmlContent、Markdown | 内容与布局 |
 | AnimateInView、PageTransition/FadeIn | 内容与布局 |
-| ThemeSwitch、ThemeQuickSwitcher、ConfigDrawer、主题与布局 Provider | 页头、设置 → 外观 |
+| ThemeSwitch、ThemeQuickSwitcher、ConfigDrawer、主题与布局 Provider | 页头、设置 → 外观（含七语言预设、HEX/取色器自定义颜色、即时预览与持久化） |
 | SkipToMain | 键盘 Tab 进入跳转链接 |
 
 ## 页面流程

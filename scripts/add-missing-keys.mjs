@@ -3,6 +3,21 @@ import path from "node:path";
 const LOCALES_DIR = path.resolve("packages/admin-ui/src/i18n/locales");
 // English source copy followed by equivalent zh, zh-TW, fr, ja, ru and vi copy.
 const rows = `
+Default|默认|預設|Par défaut|デフォルト|По умолчанию|Mặc định
+Anthropic|Anthropic|Anthropic|Anthropic|Anthropic|Anthropic|Anthropic
+Simple Large-font|超大字体简易|超大字體簡易|Simple & Grands Caractères|特大フォント・シンプル|Простая крупная|Chữ lớn & Đơn giản
+Underground|暗夜|暗夜|Souterrain|アンダーグラウンド|Подполье|Bóng đêm
+Rose Garden|玫瑰花园|玫瑰花園|Roseraie|ローズガーデン|Розовый сад|Vườn hồng
+Lake View|湖光|湖光|Vue sur le lac|レイクビュー|Озёрный вид|Hồ nước
+Sunset Glow|日落霞光|日落霞光|Lueur du couchant|サンセットグロウ|Закатное сияние|Hoàng hôn
+Forest Whisper|森林低语|森林低語|Murmure de la forêt|フォレストウィスパー|Лесной шёпот|Thì thầm rừng
+Ocean Breeze|海风|海風|Brise océane|オーシャンブリーズ|Морской бриз|Gió biển
+Lavender Dream|薰衣草梦|薰衣草夢|Rêve de lavande|ラベンダードリーム|Лавандовый сон|Giấc mơ oải hương
+Custom color|自定义颜色|自訂顏色|Couleur personnalisée|カスタムカラー|Свой цвет|Màu tùy chỉnh
+HEX color|HEX 色值|HEX 色碼|Couleur HEX|HEX カラー|Цвет HEX|Mã màu HEX
+Pick a color|选择颜色|選擇顏色|Choisir une couleur|色を選択|Выбрать цвет|Chọn màu
+Enter a valid HEX color, such as #8B5CF6.|请输入有效的 HEX 色值，例如 #8B5CF6。|請輸入有效的 HEX 色碼，例如 #8B5CF6。|Saisissez une couleur HEX valide, comme #8B5CF6.|#8B5CF6 などの有効な HEX カラーを入力してください。|Введите корректный цвет HEX, например #8B5CF6.|Nhập mã màu HEX hợp lệ, ví dụ #8B5CF6.
+Choose a color or enter a HEX value. Changes are saved automatically.|选择颜色或输入 HEX 色值，修改会自动保存。|選擇顏色或輸入 HEX 色碼，變更會自動儲存。|Choisissez une couleur ou une valeur HEX. Les modifications sont enregistrées automatiquement.|色を選択するか HEX 値を入力してください。変更は自動保存されます。|Выберите цвет или введите HEX. Изменения сохраняются автоматически.|Chọn màu hoặc nhập mã HEX. Thay đổi được lưu tự động.
 Enable selected records|启用选中记录|啟用選取的記錄|Activer la sélection|選択したレコードを有効化|Включить выбранные записи|Bật các bản ghi đã chọn
 Disable selected records|停用选中记录|停用選取的記錄|Désactiver la sélection|選択したレコードを無効化|Отключить выбранные записи|Tắt các bản ghi đã chọn
 Set tags|设置标签|設定標籤|Définir les étiquettes|タグを設定|Задать метки|Đặt nhãn

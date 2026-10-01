@@ -19,7 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 import { RadioGroup as Radio } from "@base-ui/react/radio-group";
 import { CircleCheck, Palette, RotateCcw } from "lucide-react";
-import type { SVGProps } from "react";
+import { useEffect, useId, useState, type SVGProps } from "react";
 import { useTranslation } from "react-i18next";
 
 import { IconDir } from "../assets/custom/icon-dir";
@@ -38,6 +38,8 @@ import {
   sideDrawerFormClassName,
   sideDrawerHeaderClassName,
 } from "./drawer-layout";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -55,6 +57,7 @@ import { useTheme } from "../context/theme-provider";
 import {
   type ContentLayout,
   THEME_PRESETS,
+  normalizeThemeColor,
   type ThemeFont,
   type ThemePreset,
   type ThemeRadius,
@@ -91,7 +94,6 @@ export function ConfigDrawer() {
             variant="ghost"
             aria-label={t("Open theme settings")}
             aria-describedby="config-drawer-description"
-            className="max-md:hidden"
           />
         }
       >
@@ -261,8 +263,8 @@ function PresetConfig() {
           <Item
             key={preset.value}
             value={preset.value}
-            className="group flex flex-col items-stretch outline-none"
-            aria-label={t(`preset.${preset.value}`)}
+            className="group flex min-w-0 flex-col items-stretch outline-none"
+            aria-label={t(preset.name)}
           >
             <div
               className={cn(
@@ -276,10 +278,7 @@ function PresetConfig() {
                 aria-hidden="true"
                 className="absolute inset-0 rounded-md"
                 style={{
-                  background:
-                    preset.value === "default"
-                      ? "linear-gradient(135deg, oklch(0.68 0.2 25) 0%, oklch(0.8 0.17 85) 25%, oklch(0.72 0.18 155) 50%, oklch(0.66 0.19 245) 75%, oklch(0.68 0.2 315) 100%)"
-                      : `linear-gradient(135deg, ${preset.swatches[0]} 0%, ${preset.swatches[1] ?? preset.swatches[0]} 100%)`,
+                  background: presetSwatch(preset, customization.customColor),
                 }}
               />
               <CircleCheck
@@ -290,10 +289,16 @@ function PresetConfig() {
                 aria-hidden="true"
               />
             </div>
-            <div className="mt-1.5 truncate text-center text-xs">{t(`preset.${preset.value}`)}</div>
+            <div
+              title={t(preset.name)}
+              className="mt-1.5 min-h-8 text-center text-xs leading-4 break-words"
+            >
+              {t(preset.name)}
+            </div>
           </Item>
         ))}
       </Radio>
+      {customization.preset === "custom" && <CustomColorConfig />}
     </div>
   );
 }
@@ -340,7 +345,7 @@ function FontConfig() {
           <Item
             key={option.value}
             value={option.value}
-            className="group flex flex-col items-stretch outline-none"
+            className="group flex min-w-0 flex-col items-stretch outline-none"
             aria-label={option.value === "default" ? t("System default") : option.label}
           >
             <div
@@ -414,7 +419,7 @@ function RadiusConfig() {
           <Item
             key={option.value}
             value={option.value}
-            className="group flex flex-col items-stretch outline-none"
+            className="group flex min-w-0 flex-col items-stretch outline-none"
             aria-label={option.value === "default" ? t("System default") : option.label}
           >
             <div
@@ -499,7 +504,7 @@ function ScaleConfig() {
           <Item
             key={option.value}
             value={option.value}
-            className="group flex flex-col items-stretch outline-none"
+            className="group flex min-w-0 flex-col items-stretch outline-none"
             aria-label={option.label}
           >
             <div
@@ -636,7 +641,7 @@ function ContentLayoutConfig() {
           <Item
             key={option.value}
             value={option.value}
-            className="group flex flex-col items-stretch outline-none"
+            className="group flex min-w-0 flex-col items-stretch outline-none"
             aria-label={option.label}
           >
             <div
@@ -717,6 +722,69 @@ function DirConfig() {
       <div id="direction-description" className="sr-only">
         {t("Choose between left-to-right or right-to-left site direction")}
       </div>
+    </div>
+  );
+}
+
+function presetSwatch(preset: (typeof THEME_PRESETS)[number], customColor: string) {
+  if (preset.value === "custom") return customColor;
+  if (preset.value === "default")
+    return "linear-gradient(135deg, oklch(0.68 0.2 25) 0%, oklch(0.8 0.17 85) 25%, oklch(0.72 0.18 155) 50%, oklch(0.66 0.19 245) 75%, oklch(0.68 0.2 315) 100%)";
+  return `linear-gradient(135deg, ${preset.swatches[0]} 0%, ${preset.swatches[1]} 100%)`;
+}
+
+function CustomColorConfig() {
+  const { t } = useTranslation("admin-ui");
+  const { customization, setCustomColor } = useThemeCustomization();
+  const [draft, setDraft] = useState(customization.customColor);
+  const id = useId();
+  useEffect(() => setDraft(customization.customColor), [customization.customColor]);
+  const invalid = normalizeThemeColor(draft) === null;
+  return (
+    <div className="mt-4 space-y-3 rounded-lg border p-3">
+      <Label htmlFor={`${id}-hex`}>{t("HEX color")}</Label>
+      <div className="flex items-center gap-3">
+        <Input
+          type="color"
+          aria-label={t("Pick a color")}
+          value={customization.customColor}
+          onChange={(event) => setCustomColor(event.target.value)}
+          className="h-10 w-14 shrink-0 cursor-pointer p-1"
+        />
+        <Input
+          id={`${id}-hex`}
+          value={draft}
+          placeholder="#8B5CF6"
+          maxLength={7}
+          spellCheck={false}
+          autoComplete="off"
+          aria-invalid={invalid}
+          aria-describedby={`${id}-help`}
+          onChange={(event) => {
+            setDraft(event.target.value);
+            if (/^#[0-9a-f]{6}$/i.test(event.target.value)) setCustomColor(event.target.value);
+          }}
+          onBlur={() => {
+            const color = normalizeThemeColor(draft);
+            if (color) {
+              setCustomColor(color);
+              setDraft(color);
+            }
+          }}
+          className="font-mono"
+        />
+      </div>
+      <p
+        id={`${id}-help`}
+        role={invalid ? "alert" : undefined}
+        className={cn("text-xs", invalid ? "text-destructive" : "text-muted-foreground")}
+      >
+        {t(
+          invalid
+            ? "Enter a valid HEX color, such as #8B5CF6."
+            : "Choose a color or enter a HEX value. Changes are saved automatically.",
+        )}
+      </p>
     </div>
   );
 }

@@ -149,17 +149,17 @@ bun run --cwd apps/admin preview
 
 ## 单独使用组件库
 
-组件包名为 `new-api-admin-ui`，当前版本 `0.1.2`。暂未发布公共 npm 包，在本地构建 tarball 使用：
+组件包名为 `new-api-admin-ui`，当前版本 `0.2.0`。暂未发布公共 npm 包，在本地构建 tarball 使用：
 
 ```sh
 bun run pack:ui
-# 生成 artifacts/new-api-admin-ui-0.1.2.tgz
+# 生成 artifacts/new-api-admin-ui-0.2.0.tgz
 ```
 
 在其他 React 19 工程安装（将路径替换为实际位置）：
 
 ```sh
-bun add /absolute/path/new-api-admin-ui-0.1.2.tgz
+bun add /absolute/path/new-api-admin-ui-0.2.0.tgz
 bun add react react-dom react-hook-form react-i18next i18next @tanstack/react-table
 ```
 
@@ -203,6 +203,10 @@ export function App() {
 
 `AdminProvider` 组合主题、语言、布局偏好、方向、Tooltip 和 Toast。通过页头主题按钮、外观抽屉或设置页调整明暗主题、配色、字体、圆角、密度和布局。
 
+在「颜色预设 → 自定义颜色」中使用取色器或输入 HEX 色值（`#RRGGBB`，也接受 `#RGB`）。颜色即时生效并保存到当前浏览器，刷新后保留；无效输入会提示并保留上次有效颜色。切换预设保留自定义色，「重置全部设置」恢复默认值。明暗模式均可使用。
+
+宿主组件可从 `new-api-admin-ui/theme` 导入 `useThemeCustomization()`，调用 `setCustomColor("#167a65")` 和 `setPreset("custom")`，通过 `customization.customColor` 读取当前色值。
+
 支持简体中文、英语、繁体中文、法语、日语、俄语和越南语。界面代码使用 `zhCN` / `zhTW`，资源文件对应 `zh.json` / `zh-TW.json`；独立命名空间为 `admin-ui`，默认简体中文，缺失词条回退英语。
 
 - 在组件中用 `useTranslation('admin-ui')` 获取共享组件文案。
@@ -238,7 +242,7 @@ bun run test:e2e
 CHROME_PATH=/usr/bin/google-chrome bun run test:e2e
 ```
 
-上次完整功能验证（2026-10-01）：15 个 Vitest 文件、78 个测试通过；8 个浏览器流程通过；类型、lint、格式、语言同步与生产构建通过。组件 tarball 已在无 workspace 源码别名的独立 React 项目中通过严格类型检查和构建。这是验证记录，后续改动应重新运行对应检查。
+上次完整功能验证（2026-10-01）：16 个 Vitest 文件、82 个测试通过；9 个浏览器流程通过；类型、lint、格式、语言同步与生产构建通过。组件 tarball 已在无 workspace 源码别名的独立 React 项目中通过严格类型检查和构建。这是验证记录，后续改动应重新运行对应检查。
 
 [AGENTS.md](./AGENTS.md) 定义 Agent 开发约定；[.agent/README.md](./.agent/README.md) 提供常见改动路径和交付核对流程。
 

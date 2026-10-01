@@ -24,6 +24,14 @@ function walk(dir) {
         file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
       );
       function visit(node) {
+        // Preset labels are a finite registry, not dynamically constructed keys.
+        if (
+          file.endsWith("lib/theme-customization.ts") &&
+          ts.isPropertyAssignment(node) &&
+          node.name.getText(ast) === "name" &&
+          ts.isStringLiteral(node.initializer)
+        )
+          keys.add(node.initializer.text);
         if (ts.isCallExpression(node) && node.expression.getText(ast) === "t" && node.arguments[0])
           collectStrings(node.arguments[0]);
         if (ts.isStringLiteral(node) && Object.hasOwn(en, node.text)) keys.add(node.text);

@@ -267,3 +267,44 @@ test("selected records expose a floating toolbar with real bulk actions", async 
   await toolbar.getByRole("button", { name: "Clear selection", exact: true }).click();
   await expect(toolbar).toHaveCount(0);
 });
+
+test("custom colors preview, persist and reset across desktop, dark mode and mobile", async ({
+  page,
+}) => {
+  await page.goto("/projects");
+  await page.getByRole("button", { name: "Open theme settings" }).click();
+  const presets = page.getByRole("radiogroup", { name: "Select color preset" });
+  await expect(presets.getByRole("radio", { name: "Default", exact: true })).toBeVisible();
+  await expect(page.getByText("preset.default", { exact: true })).toHaveCount(0);
+  await presets.getByRole("radio", { name: "Custom color", exact: true }).click();
+  const hex = page.getByRole("textbox", { name: "HEX color" });
+  await hex.fill("#167a65");
+  await expect(page.locator("body")).toHaveCSS("--primary", "#167a65");
+  await hex.fill("#oops");
+  await expect(hex).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("body")).toHaveCSS("--primary", "#167a65");
+  await hex.fill("#167a65");
+  await page.getByRole("radio", { name: "Select light", exact: true }).click();
+  await hex.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "artifacts/custom-color-desktop.png", animations: "disabled" });
+  await page.reload();
+  await expect(page.locator("body")).toHaveCSS("--primary", "#167a65");
+  await page.getByRole("button", { name: "Open theme settings" }).click();
+  await expect(hex).toHaveValue("#167a65");
+  await page.getByRole("radio", { name: "Select dark", exact: true }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(page.locator("body")).toHaveCSS("--primary", "#167a65");
+  await hex.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "artifacts/custom-color-dark.png", animations: "disabled" });
+  await page.keyboard.press("Escape");
+  await page.getByLabel("Language", { exact: true }).selectOption("zhCN");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "打开主题设置" }).click();
+  await expect(page.getByRole("radio", { name: "自定义颜色", exact: true })).toBeVisible();
+  await expect(page.getByRole("radio", { name: "玫瑰花园", exact: true })).toBeVisible();
+  await page.getByRole("textbox", { name: "HEX 色值" }).scrollIntoViewIfNeeded();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(391);
+  await page.screenshot({ path: "artifacts/custom-color-mobile.png", animations: "disabled" });
+  await page.getByRole("button", { name: "将所有设置重置为默认值" }).click();
+  await expect(page.locator("body")).not.toHaveAttribute("data-theme-preset", "custom");
+});

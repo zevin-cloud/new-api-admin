@@ -23,6 +23,8 @@ import {
   type ContentLayout,
   DEFAULT_THEME_CUSTOMIZATION,
   resolveThemeFont,
+  normalizeThemeColor,
+  getThemeColorForeground,
   THEME_FONT_VALUES,
   THEME_PRESET_VALUES,
   THEME_RADIUS_VALUES,
@@ -54,6 +56,7 @@ type ThemeCustomizationContextType = {
   defaults: ThemeCustomization;
   customization: ThemeCustomization;
   setPreset: (preset: ThemePreset) => void;
+  setCustomColor: (color: string) => void;
   setFont: (font: ThemeFont) => void;
   setRadius: (radius: ThemeRadius) => void;
   setScale: (scale: ThemeScale) => void;
@@ -69,6 +72,7 @@ const FALLBACK_CONTEXT: ThemeCustomizationContextType = {
   defaults: DEFAULT_THEME_CUSTOMIZATION,
   customization: DEFAULT_THEME_CUSTOMIZATION,
   setPreset: () => {},
+  setCustomColor: () => {},
   setFont: () => {},
   setRadius: () => {},
   setScale: () => {},
@@ -85,6 +89,16 @@ export function ThemeCustomizationProvider(props: { children: React.ReactNode })
       THEME_PRESET_VALUES,
       DEFAULT_THEME_CUSTOMIZATION.preset,
     ),
+  );
+  const [customColor, _setCustomColor] = useState(
+    () =>
+      normalizeThemeColor(
+        readThemePreference(
+          THEME_STORAGE_KEYS.customColor,
+          (value) => normalizeThemeColor(value) !== null,
+          DEFAULT_THEME_CUSTOMIZATION.customColor,
+        ),
+      ) ?? DEFAULT_THEME_CUSTOMIZATION.customColor,
   );
   const [font, _setFont] = useState<ThemeFont>(() =>
     readThemePreference<ThemeFont>(
@@ -123,6 +137,26 @@ export function ThemeCustomizationProvider(props: { children: React.ReactNode })
       preset === DEFAULT_THEME_CUSTOMIZATION.preset ? null : preset,
     );
   }, [preset]);
+
+  useEffect(() => {
+    if (preset !== "custom") return;
+    document.body.style.setProperty("--custom-theme-color", customColor);
+    document.body.style.setProperty(
+      "--custom-theme-foreground",
+      getThemeColorForeground(customColor),
+    );
+    return () => {
+      document.body.style.removeProperty("--custom-theme-color");
+      document.body.style.removeProperty("--custom-theme-foreground");
+    };
+  }, [preset, customColor]);
+
+  const setCustomColor = useCallback((value: string) => {
+    const normalized = normalizeThemeColor(value);
+    if (!normalized) return;
+    _setCustomColor(normalized);
+    writeThemePreference(THEME_STORAGE_KEYS.customColor, normalized);
+  }, []);
 
   // Font is the one axis where we resolve before writing the attribute:
   // the persisted preference may be `default`, but CSS works in terms of
@@ -191,6 +225,8 @@ export function ThemeCustomizationProvider(props: { children: React.ReactNode })
 
   const resetCustomization = useCallback(() => {
     setPreset(DEFAULT_THEME_CUSTOMIZATION.preset);
+    _setCustomColor(DEFAULT_THEME_CUSTOMIZATION.customColor);
+    writeThemePreference(THEME_STORAGE_KEYS.customColor, null);
     setFont(DEFAULT_THEME_CUSTOMIZATION.font);
     setRadius(DEFAULT_THEME_CUSTOMIZATION.radius);
     setScale(DEFAULT_THEME_CUSTOMIZATION.scale);
@@ -200,8 +236,9 @@ export function ThemeCustomizationProvider(props: { children: React.ReactNode })
   const value = useMemo<ThemeCustomizationContextType>(
     () => ({
       defaults: DEFAULT_THEME_CUSTOMIZATION,
-      customization: { preset, font, radius, scale, contentLayout },
+      customization: { preset, customColor, font, radius, scale, contentLayout },
       setPreset,
+      setCustomColor,
       setFont,
       setRadius,
       setScale,
@@ -210,11 +247,13 @@ export function ThemeCustomizationProvider(props: { children: React.ReactNode })
     }),
     [
       preset,
+      customColor,
       font,
       radius,
       scale,
       contentLayout,
       setPreset,
+      setCustomColor,
       setFont,
       setRadius,
       setScale,
